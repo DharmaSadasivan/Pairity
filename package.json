@@ -1,0 +1,28 @@
+{
+  "name": "pairity",
+  "version": "1.0.0",
+  "description": "Open-source legal document comparison tool — verify no changes were introduced between a final Word document and a signing PDF.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "@vitejs/plugin-react": "^6.0.2",
+    "tailwindcss": "^4.3.0",
+    "vite": "^8.0.13"
+  },
+  "dependencies": {
+    "diff-match-patch": "^1.0.5",
+    "mammoth": "^1.12.0",
+    "pdfjs-dist": "^5.7.284",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6"
+  }
+}
