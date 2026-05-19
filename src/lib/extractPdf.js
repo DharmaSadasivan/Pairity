@@ -1,7 +1,4 @@
 import * as pdfjsLib from 'pdfjs-dist'
-
-// Point the worker at the bundled worker file shipped with pdfjs-dist.
-// Vite exposes ?url imports so we can get the exact resolved path at build time.
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl
 
@@ -11,39 +8,71 @@ export async function extractPdf(file) {
 
   const pageTexts = []
 
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i)
+  for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const page = await pdf.getPage(pageNum)
     const content = await page.getTextContent()
-
-    // Items arrive roughly in reading order. Group by approximate y-position
-    // so text on the same line is joined with a space, then lines are joined
-    // with a newline. This avoids run-together words that occur when adjacent
-    // items are simply concatenated.
-    const lines = []
-    let currentY = null
-    let currentLine = []
-
-    for (const item of content.items) {
-      if (!('str' in item)) continue
-
-      const y = Math.round(item.transform[5])
-
-      if (currentY === null) {
-        currentY = y
-      }
-
-      if (Math.abs(y - currentY) > 2) {
-        if (currentLine.length) lines.push(currentLine.join(' '))
-        currentLine = []
-        currentY = y
-      }
-
-      if (item.str.trim()) currentLine.push(item.str.trim())
-    }
-
-    if (currentLine.length) lines.push(currentLine.join(' '))
-    pageTexts.push(lines.join('\n'))
+    pageTexts.push(buildPageText(content.items))
   }
 
   return pageTexts.join('\n')
+}
+
+function buildPageText(items) {
+  const textItems = items
+    .filter(item => 'str' in item && item.str.trim())
+    .map(item => ({
+      str: item.str,
+      x: item.transform[4],
+      y: item.transform[5],
+      width: item.width || 0,
+      height: item.height || 0,
+    }))
+
+  if (!textItems.length) return ''
+
+  // Use median item height to set a robust line-grouping threshold.
+  const heights = textItems.map(i => i.height).filter(h => h > 0).sort((a, b) => a - b)
+  const medianHeight = heights[Math.floor(heights.length / 2)] || 10
+  const lineThreshold = medianHeight * 0.5
+
+  // Sort top-to-bottom (y descending in PDF coord space), then left-to-right.
+  textItems.sort((a, b) => {
+    const dy = b.y - a.y
+    if (Math.abs(dy) > lineThreshold) return dy
+    return a.x - b.x
+  })
+
+  // Group into lines by y proximity.
+  const lines = []
+  let currentLine = []
+  let currentY = null
+
+  for (const item of textItems) {
+    if (currentY === null || Math.abs(item.y - currentY) > lineThreshold) {
+      if (currentLine.length) lines.push([...currentLine])
+      currentLine = [item]
+      currentY = item.y
+    } else {
+      currentLine.push(item)
+    }
+  }
+  if (currentLine.length) lines.push(currentLine)
+
+  // Build each line's text. Insert a space between adjacent items only when
+  // there is a visible gap between them (gap > 15% of font size). This avoids
+  // double-spaces while preserving word boundaries.
+  return lines
+    .map(line => {
+      let text = ''
+      for (let i = 0; i < line.length; i++) {
+        if (i > 0) {
+          const prev = line[i - 1]
+          const gap = line[i].x - (prev.x + prev.width)
+          if (gap > medianHeight * 0.15) text += ' '
+        }
+        text += line[i].str
+      }
+      return text
+    })
+    .join('\n')
 }

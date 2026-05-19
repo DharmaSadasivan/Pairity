@@ -9,6 +9,17 @@ export function normalise(text) {
     // U+200B zero-width space, U+200C ZWNJ, U+200D ZWJ,
     // U+00AD soft hyphen, U+FEFF BOM, U+FFFC object replacement char
     .replace(/[​‌‍­﻿￼]/g, "")
+    // Expand standard Unicode ligatures (NFKC handles fi/fl/ff but not all).
+    // Also remap characters that pdf.js incorrectly substitutes for ligature
+    // glyphs in certain Word-generated PDFs (font encoding mismaps).
+    .replace(/ﬀ/g, "ff")   // ﬀ
+    .replace(/ﬁ/g, "fi")   // ﬁ
+    .replace(/ﬂ/g, "fl")   // ﬂ
+    .replace(/ﬃ/g, "ffi")  // ﬃ
+    .replace(/ﬄ/g, "ffl")  // ﬄ
+    .replace(/ﬅ/g, "st")   // ﬅ
+    .replace(/ﬆ/g, "st")   // ﬆ
+    .replace(/Ɵ/g, "ti")   // Ɵ — pdf.js mismap for 'ti' ligature in some fonts
     // Unify smart/curly quotes to straight quotes
     .replace(/[‘’]/g, "'")
     .replace(/[“”]/g, '"')
