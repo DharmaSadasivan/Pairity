@@ -194,8 +194,29 @@ export default function App() {
 
       </main>
 
-      <footer className="text-center text-xs text-slate-400 py-8">
-        Pairity is open-source software. No data leaves your browser.
+      <footer className="text-center text-xs text-slate-400 py-8 space-y-1">
+        <div>Copyright &copy; 2026 Dharma Sadasivan</div>
+        <div>
+          Pairity is provided free of charge as open-source software under an{' '}
+          <a
+            href="https://github.com/DharmaSadasivan/Pairity/blob/main/LICENSE"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-slate-600"
+          >
+            MIT licence
+          </a>
+          {' '}·{' '}
+          <a
+            href="https://github.com/DharmaSadasivan/Pairity"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-slate-600"
+          >
+            GitHub
+          </a>
+        </div>
+        <div>No data leaves your browser.</div>
       </footer>
     </div>
   )

@@ -4,6 +4,8 @@
 
 At the end of contract negotiations, one party prepares a clean PDF for signing. Pairity lets the receiving party verify that the PDF is substantively identical to the final agreed Word document — catching any changes introduced during the clean-up process.
 
+**Live site: [dharmasadasivan.github.io/Pairity](https://dharmasadasivan.github.io/Pairity/)**
+
 ---
 
 ## What it does
@@ -32,14 +34,16 @@ At the end of contract negotiations, one party prepares a clean PDF for signing.
 | Whitespace and line-break differences | Non-substantive formatting |
 | Smart quotes → straight quotes | No legal meaning difference |
 | Em-dashes / en-dashes / double-hyphens → hyphen | No legal meaning difference |
+| Capitalisation differences | Heading styles (e.g. ALL CAPS in PDF vs mixed case in Word) |
+| Auto-numbered clause markers | Word list numbers not stored as text; stripped from both before comparison |
 
 ---
 
 ## Running locally
 
 ```bash
-git clone https://github.com/your-org/pairity.git
-cd pairity
+git clone https://github.com/DharmaSadasivan/Pairity.git
+cd Pairity
 npm install
 npm run dev
 ```
@@ -65,7 +69,13 @@ npm run build
 
 4. **Images and tables.** Text inside embedded images cannot be compared. Tables are compared as extracted text; visual table structure is not compared.
 
-5. **Not a substitute for legal review.** A clean Pairity result does not replace a lawyer's substantive review of the document. Pairity is a verification assist tool.
+5. **Headers and footers.** PDF headers and footers (page numbers, document titles, confidentiality notices) are included in the PDF text extraction. Word headers and footers are excluded by the extraction library. This means header and footer content may appear as differences in the output. These are easy to identify and disregard; a lawyer reviewing the diff will recognise them for what they are.
+
+6. **Capitalisation changes are not flagged.** Comparison is case-insensitive. This is intentional — Word headings are often stored in mixed case but rendered in ALL CAPS by a style, producing false positives if case is compared. Substantive word-level changes are still detected regardless of case.
+
+7. **Clause renumbering is not detected.** Auto-numbered list markers (e.g. `(1)`, `1.`, `a.`) are stripped from both documents before comparison to avoid false positives caused by Word's auto-numbering not appearing in the source XML. This means that if a clause was renumbered in the PDF, Pairity will not flag it.
+
+8. **Not a substitute for legal review.** A clean Pairity result does not replace a lawyer's substantive review of the document. Pairity is a verification assist tool.
 
 ---
 
@@ -89,12 +99,8 @@ You can verify this by inspecting the network tab in your browser's developer to
 
 ---
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
----
-
 ## Licence
 
 [MIT](LICENSE) — use it, audit it, fork it.
+
+Copyright (c) 2026 Dharma Sadasivan
