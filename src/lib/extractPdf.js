@@ -10,16 +10,27 @@ export async function extractPdf(file) {
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     const page = await pdf.getPage(pageNum)
+    const viewport = page.getViewport({ scale: 1.0 })
     const content = await page.getTextContent()
-    pageTexts.push(buildPageText(content.items))
+    pageTexts.push(buildPageText(content.items, viewport.height))
   }
 
   return pageTexts.join('\n')
 }
 
-function buildPageText(items) {
+function buildPageText(items, pageHeight) {
+  // Exclude items in the top and bottom 6% of the page.
+  // Word stores headers and footers separately; mammoth excludes them by default.
+  // Filtering these zones from the PDF avoids false positives for page numbers,
+  // document titles, and confidentiality notices in header/footer bands.
+  const margin = pageHeight * 0.06
+
   const textItems = items
     .filter(item => 'str' in item && item.str.trim())
+    .filter(item => {
+      const y = item.transform[5]
+      return y > margin && y < pageHeight - margin
+    })
     .map(item => ({
       str: item.str,
       x: item.transform[4],
@@ -59,8 +70,7 @@ function buildPageText(items) {
   if (currentLine.length) lines.push(currentLine)
 
   // Build each line's text. Insert a space between adjacent items only when
-  // there is a visible gap between them (gap > 15% of font size). This avoids
-  // double-spaces while preserving word boundaries.
+  // there is a visible gap (gap > 15% of font size).
   return lines
     .map(line => {
       let text = ''

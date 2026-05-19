@@ -149,6 +149,8 @@ export default function App() {
                 <li>Text inside images cannot be compared.</li>
                 <li>The .docx must have all tracked changes accepted before uploading.</li>
                 <li>Complex PDF layouts (footnotes, text boxes, multi-column) may extract in unexpected order.</li>
+                <li>Capitalisation changes are not flagged — comparison is case-insensitive. This avoids false positives from Word headings styled in ALL CAPS.</li>
+                <li>Clause renumbering is not detected — auto-numbered list markers are stripped before comparison to avoid false positives.</li>
                 <li>Pairity is a verification assist tool, not a substitute for legal review.</li>
               </ul>
             </details>
