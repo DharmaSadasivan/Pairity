@@ -12,9 +12,9 @@ export default function ExportButton({ docxName, pdfName, docxText, pdfText, cha
     const diffHtml = segments.map((seg) => {
       if (seg.type === 'equal') return escapeHtml(seg.text)
       if (seg.type === 'deletion') {
-        return `<mark style="background:#fee2e2;color:#991b1b;text-decoration:line-through;border-radius:2px;padding:0 2px">${escapeHtml(seg.text)}</mark>`
+        return `<mark style="background:rgba(234,34,97,0.10);color:#9b0033;text-decoration:line-through;border-radius:3px;padding:0 3px">${escapeHtml(seg.text)}</mark>`
       }
-      return `<mark style="background:#dcfce7;color:#166534;border-radius:2px;padding:0 2px">${escapeHtml(seg.text)}</mark>`
+      return `<mark style="background:rgba(92,214,168,0.12);color:#0a5c3a;border-radius:3px;padding:0 3px">${escapeHtml(seg.text)}</mark>`
     }).join('')
 
     return `<!DOCTYPE html>
@@ -23,15 +23,22 @@ export default function ExportButton({ docxName, pdfName, docxText, pdfText, cha
   <meta charset="UTF-8" />
   <title>Pairity Report — ${date}</title>
   <style>
-    body { font-family: Georgia, serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #1e293b; }
-    header { border-bottom: 2px solid #e2e8f0; padding-bottom: 1rem; margin-bottom: 1.5rem; }
-    h1 { font-size: 1.5rem; margin: 0 0 0.25rem; }
-    .meta { font-size: 0.85rem; color: #64748b; }
-    .banner { border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
-    .pass { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
-    .fail { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
-    .diff { font-family: monospace; font-size: 0.875rem; line-height: 1.7; white-space: pre-wrap; word-break: break-word; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; }
-    footer { margin-top: 2rem; font-size: 0.75rem; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; font-weight: 300; max-width: 900px; margin: 2rem auto; padding: 0 1.5rem; color: #0d253d; background: #fff; -webkit-font-smoothing: antialiased; }
+    header { border-bottom: 1px solid #e3e8ee; padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+    h1 { font-size: 1.25rem; font-weight: 300; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
+    .meta { font-size: 0.8rem; color: #64748d; margin-top: 0.25rem; }
+    .banner { border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 14px; }
+    .banner-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .pass { background: rgba(92,214,168,0.08); border: 1px solid rgba(92,214,168,0.3); }
+    .fail { background: rgba(234,34,97,0.06); border: 1px solid rgba(234,34,97,0.2); }
+    .pass .banner-dot { background: #5cd6a8; }
+    .fail .banner-dot { background: #ea2261; }
+    .banner-title { font-weight: 400; color: #0d253d; margin-bottom: 4px; }
+    .banner-sub { color: #64748d; font-size: 0.8rem; }
+    .diff { font-family: 'JetBrains Mono', 'Menlo', monospace; font-size: 0.8rem; line-height: 1.75; white-space: pre-wrap; word-break: break-word; background: #f6f9fc; border: 1px solid #e3e8ee; border-radius: 10px; padding: 1.25rem 1.5rem; max-height: 60vh; overflow-y: auto; color: #273951; }
+    footer { margin-top: 2rem; font-size: 0.75rem; color: #64748d; border-top: 1px solid #e3e8ee; padding-top: 1rem; }
+    a { color: #533afd; }
   </style>
 </head>
 <body>
@@ -43,16 +50,19 @@ export default function ExportButton({ docxName, pdfName, docxText, pdfText, cha
   </header>
 
   <div class="banner ${pass ? 'pass' : 'fail'}">
-    <strong>${pass ? '✅ No differences detected' : `⚠️ ${changeCount} difference${changeCount === 1 ? '' : 's'} detected`}</strong><br/>
-    ${pass
-      ? 'The PDF is consistent with the Word document.'
-      : 'The PDF differs from the Word document in the locations highlighted below.'}
+    <div class="banner-dot"></div>
+    <div>
+      <div class="banner-title">${pass ? 'No differences detected' : `${changeCount} difference${changeCount === 1 ? '' : 's'} detected`}</div>
+      <div class="banner-sub">${pass
+        ? 'The PDF is consistent with the Word document.'
+        : 'The PDF differs from the Word document in the locations highlighted below.'}</div>
+    </div>
   </div>
 
   ${pass ? '' : `<div class="diff">${diffHtml}</div>`}
 
   <footer>
-    Produced by <a href="https://github.com/pairity">Pairity</a> — open-source legal document verification.
+    Produced by <a href="https://dharmasadasivan.github.io/Pairity/">Pairity</a> — open-source legal document verification.
     Documents were processed locally in the browser; no content was uploaded to any server.
   </footer>
 </body>
@@ -90,16 +100,40 @@ export default function ExportButton({ docxName, pdfName, docxText, pdfText, cha
   }
 
   return (
-    <div className="flex gap-3">
+    <div style={{ display: 'flex', gap: 10 }}>
       <button
         onClick={downloadHtml}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700 text-white text-sm font-medium hover:bg-slate-800 transition-colors"
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 7,
+          padding: '9px 16px',
+          borderRadius: 9999,
+          border: 0,
+          background: 'var(--color-primary)',
+          color: '#fff',
+          font: '400 13.5px/1 var(--font-sans)',
+          cursor: 'pointer',
+          transition: 'background 180ms',
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = 'var(--color-primary-deep)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'var(--color-primary)'}
       >
         Download report
       </button>
       <button
         onClick={copyToClipboard}
-        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors"
+        style={{
+          display: 'inline-flex', alignItems: 'center', gap: 7,
+          padding: '9px 16px',
+          borderRadius: 9999,
+          border: '1px solid var(--color-hairline)',
+          background: 'var(--color-canvas)',
+          color: 'var(--color-ink)',
+          font: '400 13.5px/1 var(--font-sans)',
+          cursor: 'pointer',
+          transition: 'background 180ms',
+        }}
+        onMouseEnter={e => e.currentTarget.style.background = 'var(--color-canvas-soft)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'var(--color-canvas)'}
       >
         {copied ? 'Copied!' : 'Copy to clipboard'}
       </button>
