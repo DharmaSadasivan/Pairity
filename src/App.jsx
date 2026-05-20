@@ -293,81 +293,40 @@ function Hero({ docxFile, setDocxFile, pdfFile, setPdfFile, onCompare, error }) 
 }
 
 /* ─────────────────────────────────────────────
-   Static diff preview section (dark navy)
+   Report preview section (dark navy)
+   Shows the actual HTML report output so users
+   know exactly what they will receive.
 ────────────────────────────────────────────── */
-const Del = ({ children }) => (
-  <span style={{ background: 'rgba(234,34,97,0.18)', color: '#ffb1c6', textDecoration: 'line-through', textDecorationColor: 'rgba(234,34,97,0.6)', padding: '0 3px', borderRadius: 3 }}>{children}</span>
-)
-const Add = ({ children }) => (
-  <span style={{ background: 'rgba(92,214,168,0.16)', color: '#a3edcb', padding: '0 3px', borderRadius: 3 }}>{children}</span>
-)
-const Mod = ({ children }) => (
-  <span style={{ background: 'rgba(102,94,253,0.18)', color: '#c8c3ff', padding: '0 3px', borderRadius: 3 }}>{children}</span>
-)
-
-const leftLines = [
-  { num: 47, content: <>4.3&nbsp;&nbsp; <em>Limitation of Liability.</em> Subject to Section 4.4 below,</> },
-  { num: 48, content: <>the aggregate liability of each party arising out of or related to</> },
-  { num: 49, flagged: true, content: <>this Agreement shall not exceed <Mod>the fees paid by Customer to</Mod></> },
-  { num: 50, flagged: true, content: <><Mod>Provider in the twelve (12) months preceding the event</Mod>.</> },
-  { num: 51, content: <>This limitation applies whether the action is in contract, tort,</> },
-  { num: 52, flagged: true, content: <>strict liability, <Del>or otherwise</Del>, even if a party has been</> },
-  { num: 53, content: <>advised of the possibility of such damages.</> },
-  { num: 55, content: <>4.4&nbsp;&nbsp; <em>Exclusions.</em> The limitations in Section 4.3 do not apply</> },
-  { num: 56, flagged: true, content: <>to (i) a party's <Del>indemnification</Del> obligations under Section 6,</> },
-]
-
-const rightLines = [
-  { num: 47, content: <>4.3&nbsp;&nbsp; <em>Limitation of Liability.</em> Subject to Section 4.4 below,</> },
-  { num: 48, content: <>the aggregate liability of each party arising out of or related to</> },
-  { num: 49, flagged: true, content: <>this Agreement shall not exceed <Mod>the fees paid by Customer in</Mod></> },
-  { num: 50, flagged: true, content: <><Mod>the six (6) months preceding the event giving rise to</Mod>.</> },
-  { num: 51, content: <>This limitation applies whether the action is in contract, tort,</> },
-  { num: 52, flagged: true, content: <>strict liability, <Add>or any other theory of liability</Add>, even if</> },
-  { num: 53, content: <>a party has been advised of the possibility of such damages.</> },
-  { num: 55, content: <>4.4&nbsp;&nbsp; <em>Exclusions.</em> The limitations in Section 4.3 do not apply</> },
-  { num: 56, flagged: true, content: <>to (i) a party's obligations under Section 6,</> },
-]
-
 function DiffPreviewSection() {
-  const DiffLine = ({ num, flagged, children }) => (
-    <div style={{
-      display: 'grid', gridTemplateColumns: '44px 1fr',
-      background: flagged ? 'rgba(83,58,253,0.07)' : 'transparent',
-      borderLeft: flagged ? '2px solid var(--color-primary-soft)' : '2px solid transparent',
-      padding: '2px 0'
-    }}>
-      <span className="tnum" style={{ textAlign: 'right', paddingRight: 14, color: 'rgba(255,255,255,0.32)', font: '300 11px/1.7 var(--font-mono)', userSelect: 'none' }}>{num}</span>
-      <span style={{ paddingRight: 22 }}>{children}</span>
-    </div>
-  )
-
-  const DocPane = ({ isLeft }) => {
-    const lines = isLeft ? leftLines : rightLines
-    return (
-      <div style={{ borderRight: '1px solid rgba(255,255,255,0.06)', background: isLeft ? 'rgba(255,255,255,0.015)' : 'transparent' }}>
-        <div style={{ padding: '14px 22px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ font: '500 12.5px/1.2 var(--font-sans)', color: 'var(--color-on-primary)', letterSpacing: '-0.2px' }}>
-              {isLeft ? 'Final.docx' : 'Signing.pdf'}
-            </div>
-            <div style={{ font: '300 11.5px/1.2 var(--font-sans)', color: 'rgba(255,255,255,0.5)', letterSpacing: '-0.1px', marginTop: 3 }}>
-              {isLeft ? 'Master copy from negotiation' : 'PDF prepared for signature'}
-            </div>
-          </div>
-          <div className="tnum" style={{ font: '300 11px/1 var(--font-sans)', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.3px', textTransform: 'uppercase' }}>
-            {isLeft ? '3,184 words' : '3,182 words'}
-          </div>
-        </div>
-        <div style={{ padding: '14px 0', font: '300 13.5px/1.7 var(--font-sans)', color: 'rgba(255,255,255,0.85)', letterSpacing: '-0.2px' }}>
-          {lines.map((line, i) => <DiffLine key={i} num={line.num} flagged={line.flagged}>{line.content}</DiffLine>)}
-        </div>
-      </div>
-    )
+  // Inline styles that mirror the ExportButton's generated HTML exactly
+  const reportBody = {
+    fontFamily: 'Georgia, serif',
+    fontSize: 14,
+    lineHeight: 1.7,
+    color: '#1e293b',
+    background: '#fff',
+    padding: '28px 32px',
+    borderRadius: '0 0 10px 10px',
+    maxHeight: 420,
+    overflowY: 'auto',
+  }
+  const del = {
+    background: 'rgba(234,34,97,0.10)',
+    color: '#9b0033',
+    textDecoration: 'line-through',
+    textDecorationColor: 'rgba(234,34,97,0.5)',
+    borderRadius: 3,
+    padding: '0 3px',
+  }
+  const add = {
+    background: 'rgba(92,214,168,0.12)',
+    color: '#0a5c3a',
+    borderRadius: 3,
+    padding: '0 3px',
   }
 
   return (
-    <section style={{ background: 'var(--color-ink)', padding: '96px 0 104px', color: 'var(--color-on-primary)', position: 'relative' }}>
+    <section style={{ background: 'var(--color-ink)', padding: '96px 0 104px', color: 'var(--color-on-primary)' }}>
       <div className="container">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'flex-start', marginBottom: 56 }}>
           <div>
@@ -381,69 +340,54 @@ function DiffPreviewSection() {
           </p>
         </div>
 
-        {/* Faux diff window */}
-        <div style={{ background: 'var(--color-brand-dark-900)', borderRadius: 16, overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.18)', border: '1px solid rgba(255,255,255,0.06)' }}>
-          {/* Window chrome */}
-          <div style={{ padding: '14px 18px', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ display: 'flex', gap: 7 }}>
-              <span style={{ width: 10, height: 10, borderRadius: 5, background: 'var(--color-ruby)', display: 'inline-block' }} />
-              <span style={{ width: 10, height: 10, borderRadius: 5, background: 'var(--color-magenta)', display: 'inline-block' }} />
-              <span style={{ width: 10, height: 10, borderRadius: 5, background: 'var(--color-primary-soft)', display: 'inline-block' }} />
+        {/* Browser chrome wrapping the actual report output */}
+        <div style={{ borderRadius: 12, overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.18)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          {/* Browser address bar */}
+          <div style={{ background: '#23252e', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ display: 'flex', gap: 6 }}>
+              <span style={{ width: 10, height: 10, borderRadius: 5, background: '#ff5f57', display: 'inline-block' }} />
+              <span style={{ width: 10, height: 10, borderRadius: 5, background: '#febc2e', display: 'inline-block' }} />
+              <span style={{ width: 10, height: 10, borderRadius: 5, background: '#28c840', display: 'inline-block' }} />
             </div>
-            <div style={{ marginLeft: 8, font: '300 12.5px/1 var(--font-sans)', color: 'rgba(255,255,255,0.72)', letterSpacing: '-0.2px', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              <PairityMark size={14} color="rgba(255,255,255,0.85)" />
-              pairity · SaaS-MSA_FINAL.docx ↔ SaaS-MSA_signing.pdf
-            </div>
-            <div style={{ marginLeft: 'auto' }}>
-              <div className="tnum" style={{ font: '300 12px/1 var(--font-sans)', color: 'rgba(255,255,255,0.55)', letterSpacing: '-0.2px' }}>Processed locally · 1.42s</div>
+            <div style={{ flex: 1, background: '#1a1c24', borderRadius: 6, padding: '5px 12px', font: '300 11.5px/1 var(--font-mono)', color: 'rgba(255,255,255,0.45)', letterSpacing: '0.1px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              pairity-report.html
             </div>
           </div>
-          {/* Panes */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 280px' }}>
-            <DocPane isLeft={true} />
-            <DocPane isLeft={false} />
-            {/* Summary rail */}
-            <div style={{ padding: 22, background: 'rgba(0,0,0,0.2)' }}>
-              <div style={{ font: '500 11px/1 var(--font-sans)', letterSpacing: '0.6px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 16 }}>Summary</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 22 }}>
-                {[{ label: 'Flagged', value: '3', tone: 'var(--color-primary-soft)' }, { label: 'Lines scanned', value: '412', tone: 'rgba(255,255,255,0.85)' }].map(s => (
-                  <div key={s.label}>
-                    <div className="tnum" style={{ font: '300 28px/1 var(--font-sans)', letterSpacing: '-0.6px', color: s.tone, fontFeatureSettings: '"ss01" on, "tnum" on' }}>{s.value}</div>
-                    <div style={{ font: '300 11.5px/1 var(--font-sans)', color: 'rgba(255,255,255,0.55)', marginTop: 6, letterSpacing: '-0.1px' }}>{s.label}</div>
-                  </div>
-                ))}
-              </div>
-              <div style={{ font: '500 11px/1 var(--font-sans)', letterSpacing: '0.6px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: 14 }}>Substantive changes</div>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
-                {[
-                  { line: '49', tag: 'Reworded', color: 'var(--color-primary-soft)', body: <>Liability cap shortened from <strong>12 months</strong> to <strong>6 months</strong>.</> },
-                  { line: '52', tag: 'Added', color: '#5cd6a8', body: <>Inserted <em>"or any other theory of liability"</em>.</> },
-                  { line: '56', tag: 'Removed', color: 'var(--color-ruby)', body: <>Deleted reference to <em>"indemnification"</em> obligations.</> },
-                ].map(c => (
-                  <li key={c.line} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ font: '500 10.5px/1 var(--font-sans)', letterSpacing: '0.4px', textTransform: 'uppercase', color: c.color, background: 'rgba(255,255,255,0.04)', border: `1px solid ${c.color}55`, borderRadius: 9999, padding: '4px 9px' }}>{c.tag}</span>
-                      <span className="tnum" style={{ font: '300 11.5px/1 var(--font-mono)', color: 'rgba(255,255,255,0.5)' }}>L{c.line}</span>
-                    </div>
-                    <div style={{ font: '300 13px/1.5 var(--font-sans)', color: 'rgba(255,255,255,0.85)', letterSpacing: '-0.2px' }}>{c.body}</div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
 
-        {/* Legend */}
-        <div style={{ marginTop: 28, display: 'flex', gap: 28, flexWrap: 'wrap', font: '300 13px/1.4 var(--font-sans)', color: 'rgba(255,255,255,0.6)', letterSpacing: '-0.2px' }}>
-          {[{ color: 'var(--color-ruby)', label: 'Removed from .docx' }, { color: '#5cd6a8', label: 'Added in signing .pdf' }, { color: 'var(--color-primary-soft)', label: 'Reworded' }].map(l => (
-            <span key={l.label} style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ width: 8, height: 8, borderRadius: 4, background: l.color, display: 'inline-block' }} />
-              {l.label}
-            </span>
-          ))}
-          <span style={{ marginLeft: 'auto', fontFeatureSettings: '"ss01" on, "tnum" on' }}>
-            Sample: SaaS Master Services Agreement · §4.3 Limitation of Liability
-          </span>
+          {/* Report header bar */}
+          <div style={{ background: '#fff', borderBottom: '2px solid #e2e8f0', padding: '20px 32px 16px' }}>
+            <div style={{ fontFamily: 'Georgia, serif', fontSize: 20, fontWeight: 400, color: '#1e293b', marginBottom: 8 }}>
+              Pairity — Document Comparison Report
+            </div>
+            <div style={{ fontFamily: 'Georgia, serif', fontSize: 12, color: '#64748b' }}>Generated: 5/20/2026, 4:35:47 PM</div>
+            <div style={{ fontFamily: 'Georgia, serif', fontSize: 12, color: '#64748b' }}>Word document: <strong>Test-NDA-v1.docx</strong></div>
+            <div style={{ fontFamily: 'Georgia, serif', fontSize: 12, color: '#64748b' }}>PDF: <strong>Test-NDA-v2.pdf</strong></div>
+          </div>
+
+          {/* Report body */}
+          <div style={reportBody}>
+            {/* Banner */}
+            <div style={{ borderRadius: 8, padding: '12px 16px', marginBottom: 20, background: 'rgba(234,34,97,0.06)', border: '1px solid rgba(234,34,97,0.2)', display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+              <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#ea2261', display: 'inline-block', flexShrink: 0, marginTop: 4 }} />
+              <div>
+                <div style={{ fontWeight: 600, color: '#1e293b', marginBottom: 3 }}>15 differences detected</div>
+                <div style={{ fontSize: 13, color: '#64748b' }}>The PDF differs from the Word document in the locations highlighted below.</div>
+              </div>
+            </div>
+
+            {/* Diff text */}
+            <div style={{ fontFamily: "'JetBrains Mono', Menlo, monospace", fontSize: 12.5, lineHeight: 1.75, whiteSpace: 'pre-wrap', wordBreak: 'break-word', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '16px 20px', color: '#334155' }}>
+              {'...the term "confidential information" means '}
+              <mark style={del}>all</mark>
+              {' non-public information disclosed subsequent to the effective date of this agreement by either party to the other party or its employees, officers, directors, shareholders, attorneys, representatives or agents (collectively, "agents") in any manner, whether orally, visually or in tangible form'}
+              <mark style={del}>(including, without limitation, documents, drafts and computer readable media), and is any information regarding the disclosing party's business, operations, strategic plans, budgets, financings, revenues, expenses, assets, liabilities, other financial information, medical staff, employees, contractors, faculty, students, contracts, policies, procedures, and other data, management methods, know-how, trade secrets, instruction manuals, market analyses, financial and operational controls and procedures, as well as all proposed terms, draft documents, and other material generated as part of the discussions, and all other proprietary information developed and used by either party in</mark>
+              {', provided that such information is identified as confidential at the time of disclosure or, if disclosed orally, is summarized in writing as confidential within a reasonable time after disclosure. confidential information shall not include any information that the party receiving such information can demonstrate: (a) was in the receiving party\'s lawful possession prior to disclosure by the disclosing party hereunder; (b) has been publicly disclosed; (c) has come into the possession of the receiving party from a third party who the receiving party reasonably believes its '}
+              <mark style={del}>oper</mark>
+              {' under no obligation '}
+              <mark style={del}>(as of con</mark>
+              <mark style={add}>ducted or as proposed to be conducted), which has not been publicly disclosed...</mark>
+            </div>
+          </div>
         </div>
       </div>
     </section>
