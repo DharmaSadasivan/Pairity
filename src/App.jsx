@@ -141,19 +141,60 @@ export default function App() {
               </button>
             </div>
 
-            {/* Limitations note */}
-            <details className="text-xs text-slate-400 border border-slate-200 rounded-lg px-4 py-3 bg-white cursor-pointer">
-              <summary className="font-medium text-slate-500 cursor-pointer">Known limitations</summary>
-              <ul className="mt-2 space-y-1 list-disc list-inside">
-                <li>Scanned PDFs are not supported — digitally-generated PDFs only.</li>
-                <li>Text inside images cannot be compared.</li>
-                <li>The .docx must have all tracked changes accepted before uploading.</li>
-                <li>Complex PDF layouts (footnotes, text boxes, multi-column) may extract in unexpected order.</li>
-                <li>Capitalisation changes are not flagged — comparison is case-insensitive. This avoids false positives from Word headings styled in ALL CAPS.</li>
-                <li>Clause renumbering is not detected — auto-numbered list markers are stripped before comparison to avoid false positives.</li>
-                <li>Pairity is a verification assist tool, not a substitute for legal review.</li>
-              </ul>
-            </details>
+            {/* About Pairity */}
+            <div className="border-t border-slate-200 pt-8 space-y-6">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                <div className="bg-white rounded-xl border border-slate-200 px-5 py-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">What it does</div>
+                  <div className="text-sm text-slate-700">Compares DOCX vs PDF text</div>
+                </div>
+
+                <div className="bg-white rounded-xl border border-slate-200 px-5 py-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">How it works</div>
+                  <div className="text-sm text-slate-700">Pairity extracts and compares text directly between the DOCX and PDF.</div>
+                </div>
+
+                <div className="bg-white rounded-xl border border-slate-200 px-5 py-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Confidentiality</div>
+                  <div className="text-sm text-slate-700">Processing takes place entirely within your browser, ensuring confidentiality. Files are not sent to anyone.</div>
+                </div>
+
+                <div className="bg-white rounded-xl border border-slate-200 px-5 py-4">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Cost and licence</div>
+                  <div className="text-sm text-slate-700">Pairity is free and open source for you to use and adapt.</div>
+                </div>
+
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 px-5 py-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-2">Context</div>
+                <p className="text-sm text-slate-700 leading-relaxed">
+                  At the end of contractual negotiations, lawyers on both sides typically have a final version of the
+                  working document (often in .docx format). One side may convert the final version to PDFs for signing,
+                  requiring the other side to then check the PDF against the final version of the working document, to
+                  ensure that no changes have been introduced. This "last mile" document check can be time consuming
+                  and not as simple as doing a Compare between two Word documents. Pairity is a fast and light web app
+                  to help you with "last mile" document checks.
+                </p>
+              </div>
+
+              <div className="bg-white rounded-xl border border-slate-200 px-5 py-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">Known limitations</div>
+                <ol className="text-sm text-slate-700 space-y-2">
+                  <li className="flex gap-2"><span className="text-slate-400 shrink-0">(1)</span><span>Scanned PDFs (i.e. image PDFs) are not supported — digitally-generated PDFs only.</span></li>
+                  <li className="flex gap-2"><span className="text-slate-400 shrink-0">(2)</span><span>Text inside images cannot be compared.</span></li>
+                  <li className="flex gap-2"><span className="text-slate-400 shrink-0">(3)</span><span>You must accept all tracked changes in the .docx before doing the comparison.</span></li>
+                  <li className="flex gap-2"><span className="text-slate-400 shrink-0">(4)</span><span>Headers and Footers will often be flagged.</span></li>
+                  <li className="flex gap-2"><span className="text-slate-400 shrink-0">(5)</span><span>Complex layouts (footnotes, tables, multi-column, etc.) may be flagged.</span></li>
+                  <li className="flex gap-2"><span className="text-slate-400 shrink-0">(6)</span><span>Capitalisation changes are not flagged — comparison is case-insensitive. This avoids false positives from styling markups.</span></li>
+                  <li className="flex gap-2"><span className="text-slate-400 shrink-0">(7)</span><span>Clause renumbering is not detected — auto-numbered list markers are stripped before comparison to avoid false positives from styling markups.</span></li>
+                  <li className="flex gap-2"><span className="text-slate-400 shrink-0">(8)</span><span>Pairity is a verification assist tool, not a substitute for legal review.</span></li>
+                </ol>
+              </div>
+
+            </div>
           </div>
         )}
 
